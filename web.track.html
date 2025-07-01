@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Phone Tracker</title>
+</head>
+<body>
+  <h2>Tracking Active</h2>
+  <p id="status">Getting location...</p>
+
+  <script>
+    function sendLocationToServer(lat, lon) {
+      fetch("https://your-server.com/track.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ latitude: lat, longitude: lon })
+      })
+      .then(response => response.text())
+      .then(data => {
+        document.getElementById("status").textContent = "Location sent: " + lat + ", " + lon;
+      });
+    }
+
+    function trackLocation() {
+      if (navigator.geolocation) {
+        navigator.geolocation.watchPosition(function(position) {
+          let lat = position.coords.latitude;
+          let lon = position.coords.longitude;
+          sendLocationToServer(lat, lon);
+        });
+      } else {
+        document.getElementById("status").textContent = "Geolocation is not supported.";
+      }
+    }
+
+    trackLocation();
+  </script>
+</body>
+</html>
